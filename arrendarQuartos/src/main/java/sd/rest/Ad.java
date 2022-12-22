@@ -4,25 +4,37 @@
  */
 package sd.rest;
 
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
+import javax.xml.bind.annotation.*;
 import java.sql.*;
 
 /**
  *
  * @author gui
  */
-public class  Ad implements java.io.Serializable {
-    public String advertiser;
-    public String typeAd;
-    public String stateAd;
-    public int price;
-    public String gender;
-    public String localAd;
-    public String typology;
-    public Date date;
 
-    int aid;
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "ad")
+public class  Ad implements java.io.Serializable {
+    @XmlElement(required = true)
+    protected String advertiser;
+    @XmlElement(required = true)
+    protected String typeAd;
+    @XmlElement(required = true)
+    protected String stateAd;
+    @XmlElement(required = true)
+    protected int price;
+    @XmlElement(required = true)
+    protected String gender;
+    @XmlElement(required = true)
+    protected String localAd;
+    @XmlElement(required = true)
+    protected String typology;
+    @XmlElement(required = false)
+    protected Date date;
+    @XmlElement(required = true)
+    protected String description;
+    @XmlElement(required = false)
+    protected int aid;
 
     public Ad() {
         super();
@@ -65,6 +77,8 @@ public class  Ad implements java.io.Serializable {
         this.date = date;
     }
 
+    public void setDescription(String description) { this.description = description; }
+
     // get's
 
     public String getAdvertiser() {
@@ -99,5 +113,7 @@ public class  Ad implements java.io.Serializable {
         return date;
     }
 
-    public int getAid() {return aid;}
+    public int getAid() { return aid; }
+
+    public String getDescription() { return description; }
 }

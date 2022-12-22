@@ -4,8 +4,9 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
+import java.util.Properties;
 
 /**
  * Main class.
@@ -13,20 +14,37 @@ import java.net.URI;
  */
 public class Server {
     // Base URI the Grizzly HTTP server will listen on
-    public static final String BASE_URI = "http://localhost:8080/";
+    public static final URI BASE_URI = getBaseURI();
+
+    private static int getPort(int defaultPort) {
+        return defaultPort;
+    }
+
+    private static URI getBaseURI() {
+        String baseuri = new String();
+
+        try(InputStream is = new FileInputStream("src/main/resources/configs.properties")) {
+            Properties p = new Properties();
+            p.load(is);
+            baseuri = p.getProperty("baseuri");
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return URI.create(baseuri);
+    }
 
     /**
      * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
      * @return Grizzly HTTP server.
      */
-    public static HttpServer startServer(){
+    public static HttpServer startServer() throws IOException{
         // create a resource config that scans for JAX-RS resources and providers
         // in sd.rest package
         final ResourceConfig rc = new ResourceConfig().packages("sd.rest");
 
         // create and start a new instance of grizzly http server
         // exposing the Jersey application at BASE_URI
-        return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
+        return GrizzlyHttpServerFactory.createHttpServer(BASE_URI, rc);
     }
 
     /**
@@ -35,11 +53,15 @@ public class Server {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
-        final HttpServer server = startServer();
-        System.out.println(String.format("Jersey app started with endpoints available at "
-                + "%s%nHit Ctrl-C to stop it...", BASE_URI));
+        System.out.println("Starting grizzly...");
+        HttpServer server = startServer();
+
+        System.out.println("\n## Server on at " + BASE_URI);
+        System.out.println("\n## Hit enter to stop the server...");
+
         System.in.read();
 
+        //após pressionar o enter
         server.stop();
     }
 }

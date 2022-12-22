@@ -11,24 +11,32 @@ import java.util.ArrayList;
  *
  * @author gui
  */
-public class ConnectionDB implements java.io.Serializable
-{
+public class ConnectionDB {
+    private String PG_HOST;
+    private String PG_DB;
+    private String USER;
+    private String PWD;
+    Statement stmt = null; //variável responsável sobretudo por realizar alterações nas tabelas da base de dados SQL
+    Connection con = null; //variável responsável por estabelecer a comunicação com a base de dados pretendida
 
-    public static Statement stmt = null; //variável responsável sobretudo por realizar alterações nas tabelas da base de dados SQL
-    public static Connection con; //variável responsável por estabelecer a comunicação com a base de dados pretendida
+    public ConnectionDB(String PG_HOST, String PG_DB, String USER, String PWD) {
+        this.PG_HOST = PG_HOST;
+        this.PG_DB = PG_DB;
+        this.USER = USER;
+        this.PWD = PWD;
+    }
 
     /*
     função responsável por criar a conexão com a base de dados
      */
     public void connectDb() {
-
-
         try{
             Class.forName("org.postgresql.Driver");
 
-            con = DriverManager.getConnection("jdbc:postgresql://alunos.di.uevora.pt/l48921", "l48921", "teste");
+            con = DriverManager.getConnection("jdbc:postgresql://" + PG_HOST + ":5432/" + PG_DB,
+                    USER,
+                    PWD);
             stmt = con.createStatement();
-            System.out.println("Conectado com sucesso");
         }
         catch (Exception e){
             e.printStackTrace();
@@ -36,33 +44,6 @@ public class ConnectionDB implements java.io.Serializable
         }
     }
 
-    /*
-    função que trata de inserir valores na tabela advertisement da base de dados
-     */
-    public int insertIntoTableAdvertisement(Ad ad) {
-        int aid = -1;
-        try {
-            stmt.executeUpdate("insert into advertisement values ('"
-                    +ad.getAdvertiser()+ "', " +
-                    "'" +ad.getType()+ "', " +
-                    "'" +ad.getState()+ "', "+ ad.getPrice()+
-                    ", '" +ad.getGender()+ "', " +
-                    "'" +ad.getLocal()+ "', " +
-                    "'" +ad.getTypology()+ "', " +
-                    "'" +ad.getDate()+ "' );");
-
-            ResultSet rs = stmt.executeQuery("SELECT COUNT(*) AS number FROM advertisement");
-
-            rs.next();
-            aid = rs.getInt("number");
-
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Problems on insert...");
-        }
-        return aid;
-    }
     /*
     função que trata de inserir valores na tabela messages da base de dados
      */
@@ -202,10 +183,13 @@ public class ConnectionDB implements java.io.Serializable
         try {
             stmt.close();
             con.close();
-            System.out.println("Conexão com a base de dados terminada");
         }
         catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public Statement getStatement() {
+        return stmt;
     }
 }

@@ -3,18 +3,29 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package sd.rest;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Date;
 /**
  *
  * @author gui
  */
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "message")
 public class Message implements java.io.Serializable
 {
-    String sender;
-    String content;
-    Date date;
-    int aid;
+    @XmlElement(required = true)
+    protected String sender;
+    @XmlElement(required = true)
+    protected String content;
+    @XmlElement(required = false)
+    protected Date date;
+    @XmlElement(required = false)
+    protected int aid;
 
     public Message() { super(); }
 
