@@ -45,22 +45,6 @@ public class ConnectionDB {
     }
 
     /*
-    função que serve para alterar valores, nomeadamente o estado, na tabela advertisement
-     */
-    public boolean alterTableAdvertisement(String state, int aid) {
-        try {
-            stmt.executeUpdate("UPDATE advertisement SET statead='" + state + "' WHERE aid=" + aid + ";");
-
-            System.out.println("Estado do anúncio " + aid + " alterado para " + state);
-            return true;
-        } catch(Exception e) {
-            e.printStackTrace();
-            System.err.println("Problems updating the table...");
-            return false;
-        }
-    }
-
-    /*
     função que encerra a conexão com a base de dados
      */
     public void closeConnection() {

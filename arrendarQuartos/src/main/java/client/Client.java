@@ -236,7 +236,7 @@ public class Client {
         try {
             List<Ad> ads = new LinkedList<Ad>();
             if (value == 0) {
-                HttpURLConnection connection = (HttpURLConnection) new URL(SERVER_URL + "/ads?state=inativo").openConnection();
+                HttpURLConnection connection = (HttpURLConnection) new URL(SERVER_URL + "/ads?state=ativo").openConnection();
                 connection.setRequestProperty("Content-Type", "application/json");
                 connection.setRequestMethod("GET");
                 connection.setDoOutput(false);
@@ -283,7 +283,7 @@ public class Client {
                 local = local.trim();
                 fields += "&local=" + local;
 
-                HttpURLConnection connection = (HttpURLConnection) new URL(SERVER_URL + "/ads?state=inativo" + fields).openConnection();
+                HttpURLConnection connection = (HttpURLConnection) new URL(SERVER_URL + "/ads?state=ativo" + fields).openConnection();
                 connection.setRequestProperty("Content-Type", "application/json");
                 connection.setRequestMethod("GET");
                 connection.setDoOutput(false);
@@ -335,7 +335,7 @@ public class Client {
                     }
                 } while(true);
 
-                HttpURLConnection connection = (HttpURLConnection) new URL(SERVER_URL + "/ads?state=inativo&aid=" + aid).openConnection();
+                HttpURLConnection connection = (HttpURLConnection) new URL(SERVER_URL + "/ads?state=ativo&aid=" + aid).openConnection();
                 connection.setRequestProperty("Content-Type", "application/json");
                 connection.setRequestMethod("GET");
                 connection.setDoOutput(false);

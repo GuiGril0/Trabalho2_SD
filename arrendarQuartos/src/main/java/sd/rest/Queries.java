@@ -76,23 +76,24 @@ public class Queries {
             String response = "";
             for(String i : aux) {
                 String[] values = i.split("=");
-                if(values[0].equals("description"))
-                    continue;
-                response += values[0] + "=";
-                if(values[0].equals("aid")) {
-                    response += values[1] + " AND ";
+                if(values[0].equals("aid") || values[0].equals("statead")) {
+                    if(values[0].equals("aid"))
+                        response += values[0] + "=" + values[1];
+                    else
+                        response += values[0] + "='" + values[1] + "'";
                 }
                 else {
-                    response += "'";
+                    response += values[0] + " like '%";
                     for (int j = 1; j < values.length; j++)
                         response += values[j];
-                    response += "' AND ";
+                    response += "%'";
                 }
+                response += " AND ";
             }
             response = response.substring(0, response.length() - 4);
             response = response.trim();
 
-            ResultSet rs = stmt.executeQuery("SELECT * FROM advertisement WHERE " + response + ";");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM advertisement WHERE " + response + " ORDER BY aid;");
 
             while (rs.next()) {
                 String advertiser = rs.getString("advertiser");
@@ -198,7 +199,6 @@ public class Queries {
 
             stmt.executeUpdate("UPDATE advertisement SET statead='" + state + "' WHERE aid=" + aid + ";");
 
-            System.out.println("Estado do anúncio " + aid + " alterado para " + state);
             return true;
         } catch(Exception e) {
             e.printStackTrace();
