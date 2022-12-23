@@ -307,15 +307,13 @@ public class Client {
                     System.out.println();
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        if (jsonObject.get("description").toString().contains(description.trim())) {
-                            System.out.println("  Anúncio " + jsonObject.get("aid"));
-                            System.out.println("typology: " + jsonObject.get("typology") +
-                                    "\ngender: " + jsonObject.get("gender") +
-                                    "\nprice: " + jsonObject.get("price") +
-                                    "\ntype: " + jsonObject.get("type") +
-                                    "\nlocal: " + jsonObject.get("local"));
-                            System.out.println();
-                        }
+                        System.out.println("  Anúncio " + jsonObject.get("aid"));
+                        System.out.println("typology: " + jsonObject.get("typology") +
+                                "\ngender: " + jsonObject.get("gender") +
+                                "\nprice: " + jsonObject.get("price") +
+                                "\ntype: " + jsonObject.get("type") +
+                                "\nlocal: " + jsonObject.get("local"));
+                        System.out.println();
                     }
                 }
             }
