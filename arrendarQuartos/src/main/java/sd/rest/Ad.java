@@ -29,11 +29,11 @@ public class  Ad implements java.io.Serializable {
     protected String localAd;
     @XmlElement(required = true)
     protected String typology;
-    @XmlElement(required = false)
+    @XmlElement(required = true)
     protected Date date;
     @XmlElement(required = true)
     protected String description;
-    @XmlElement(required = false)
+    @XmlElement(required = true)
     protected int aid;
 
     public Ad() {

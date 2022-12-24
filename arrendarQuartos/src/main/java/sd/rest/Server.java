@@ -23,7 +23,8 @@ public class Server {
     private static URI getBaseURI() {
         String baseuri = new String();
 
-        try(InputStream is = new FileInputStream("src/main/resources/configs.properties")) {
+        try {
+            InputStream is = new FileInputStream("src/main/resources/configs.properties");
             Properties p = new Properties();
             p.load(is);
             baseuri = p.getProperty("baseuri");

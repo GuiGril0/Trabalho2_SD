@@ -21,7 +21,14 @@ import sd.rest.Message;
  */
 public class Client {
     private static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    private static final String SERVER_URL = "http://localhost:8080/server";
+    private static String SERVER_URL;
+
+    private static void getBaseURL() throws Exception{
+        InputStream is = new FileInputStream("src/main/resources/configs.properties");
+        Properties p = new Properties();
+        p.load(is);
+        SERVER_URL = p.getProperty("baseuri") + "server";
+    }
 
     private static JSONArray convertJsonStringToJsonArray(String json) {
         return new JSONArray(json);
@@ -474,7 +481,12 @@ public class Client {
 
     public static void main(String[] args) {
         System.out.println("\n Bem vindo ao sistema de oferta e procura de alojamentos!");
+        try {
+            getBaseURL();
+            showMenu();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
 
-        showMenu();
     }
 }

@@ -22,9 +22,9 @@ public class Message implements java.io.Serializable
     protected String sender;
     @XmlElement(required = true)
     protected String content;
-    @XmlElement(required = false)
+    @XmlElement(required = true)
     protected Date date;
-    @XmlElement(required = false)
+    @XmlElement(required = true)
     protected int aid;
 
     public Message() { super(); }
