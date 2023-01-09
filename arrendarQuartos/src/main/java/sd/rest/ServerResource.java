@@ -1,7 +1,9 @@
 package sd.rest;
 
 import jakarta.ws.rs.*;
+import org.json.JSONObject;
 
+import java.sql.Date;
 import java.util.List;
 
 /**
@@ -15,13 +17,32 @@ public class ServerResource {
         q = new Queries();
     }
 
+    /*
     @Path("/ad")
     @POST
     @Consumes({"application/json"})
     public synchronized int postAd(Ad ad) {
+
         return q.insertIntoTableAdvertisement(ad);
     }
+    */
+    @Path("/ad")
+    @GET
+    @Produces({"application/json"})
+    public synchronized int postAd(@QueryParam("advertiser") String advertiser, @QueryParam("type") String type, @QueryParam("price") String price, @QueryParam("gender") String gender, @QueryParam("local") String local, @QueryParam("typology") String typology, @QueryParam("description") String description) {
+        Ad ad = new Ad();
+        ad.setAdvertiser(advertiser);
+        ad.setType(type);
+        ad.setPrice(Integer.parseInt(price));
+        ad.setGender(gender);
+        ad.setLocal(local);
+        ad.setTypology(typology);
+        ad.setDescription(description);
+        ad.setState("inativo");
+        ad.setDate(new Date(System.currentTimeMillis()));
 
+        return q.insertIntoTableAdvertisement(ad);
+    }
     @Path("/ads")
     @GET
     @Produces({"application/json"})
@@ -49,13 +70,27 @@ public class ServerResource {
         }
     }
 
+    /*
     @Path("/msg")
     @POST
     @Consumes({"application/json"})
     public synchronized boolean sendMessage(Message msg) {
         return q.insertIntoTableMessages(msg);
     }
+     */
 
+    @Path("/msg")
+    @GET
+    @Produces({"application/json"})
+    public synchronized boolean sendMessage(@QueryParam("sender") String sender, @QueryParam("content") String content, @QueryParam("aid") String aid) {
+        Message msg = new Message();
+        msg.setSender(sender);
+        msg.setContent(content);
+        msg.setAid(Integer.parseInt(aid));
+        msg.setDate(new Date(System.currentTimeMillis()));
+
+        return q.insertIntoTableMessages(msg);
+    }
     @Path("/msgs")
     @GET
     @Produces({"application/json"})
@@ -64,8 +99,8 @@ public class ServerResource {
     }
 
     @Path("/changead")
-    @POST
-    @Consumes({"application/json"})
+    @GET
+    @Produces({"application/json"})
     public synchronized boolean changeAdState(@QueryParam("state") String state, @QueryParam("aid") String aid) {
         return q.alterTableAdvertisement(state, aid);
     }

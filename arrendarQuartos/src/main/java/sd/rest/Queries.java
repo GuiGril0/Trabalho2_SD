@@ -34,9 +34,11 @@ public class Queries {
     public int insertIntoTableAdvertisement(Ad ad) {
         int aid = -1;
         try {
+
             ConnectionDB db = setConnectionToDB();
             db.connectDb();
             Statement stmt = db.getStatement();
+
 
             stmt.executeUpdate("insert into advertisement values ('"
                     +ad.getAdvertiser()+ "', " +
@@ -48,11 +50,12 @@ public class Queries {
                     "'" +ad.getDate()+ "', " +
                     "'" +ad.getDescription()+ "' );");
 
-            ResultSet rs = stmt.executeQuery("SELECT COUNT(*) AS number FROM advertisement");
+            //ResultSet rs = stmt.executeQuery("SELECT COUNT(*) AS number FROM advertisement");
+
+            ResultSet rs = stmt.executeQuery("SELECT MAX(aid) AS number FROM advertisement");
 
             rs.next();
             aid = rs.getInt("number");
-
             db.closeConnection();
         } catch(Exception e) {
             e.printStackTrace();
@@ -142,7 +145,7 @@ public class Queries {
             stmt.executeUpdate("insert into messages values ('"
                     +msg.getSender()+ "', " +
                     "'" +msg.getContent()+ "', " +
-                    "'" +msg.getDate()+ "', " +
+                    "'" +new Date(System.currentTimeMillis())+ "', " +
                     msg.getAid()+ ");");
 
             return true;

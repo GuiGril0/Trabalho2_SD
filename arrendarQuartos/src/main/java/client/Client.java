@@ -159,9 +159,9 @@ public class Client {
         ad.setGender(gender);
 
         String typology = "";
-        int n = 0;
+        int n = -1;
         do {
-            System.out.print("Insira a tipologia do alojamento (quarto ou T1, T2...): ");
+            System.out.print("Insira a tipologia do alojamento (quarto ou T0, T1...): ");
             typology = br.readLine();
             typology = typology.trim();
             typology = typology.toLowerCase();
@@ -171,11 +171,11 @@ public class Client {
                 String aux = typology.substring(1, typology.length());
                 try {
                     n = Integer.parseInt(aux);
-                    if(n > 0) {
+                    if(n >= 0) {
                         break;
                     }
                 } catch (NumberFormatException e) {
-                    System.out.println("Formato errado! TN (sendo N um número inteiro positivo");
+                    System.out.println("Formato errado! TN (sendo N um número inteiro maior ou igual a 0");
                     continue;
                 }
             }
@@ -194,45 +194,47 @@ public class Client {
         }
         ad.setDescription(description);
 
-        ad.setDate(new Date(System.currentTimeMillis()));
-        ad.setState("inativo");
-
         int aid = postAd(ad);
-        if(aid != -1) {
-            ad.setAid(aid);
+        ad.setAid(aid);
+        if(aid != -1)
             System.out.println("Ok anúncio " + ad.getAid());
-        }
         else
             System.err.println("\n Erro ao postar o anúncio!");
     }
 
     private static int postAd(Ad ad) {
         try {
-            HttpURLConnection connection = (HttpURLConnection) new URL(SERVER_URL + "/ad").openConnection();
+            HttpURLConnection connection = (HttpURLConnection) new URL(SERVER_URL + "/ad?advertiser=" +
+                    ad.getAdvertiser() + "&type=" + ad.getType() + "&price=" + ad.getPrice() +
+                    "&gender=" + ad.getGender() + "&local=" + ad.getLocal() + "&typology=" + ad.getTypology() +
+                    "&description=" + ad.getDescription()).openConnection();
             connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
             connection.setRequestProperty("Accept", "application/json");
-            connection.setRequestMethod("POST");
-            connection.setDoOutput(true);
-
+            //connection.setRequestMethod("POST");
+            connection.setRequestMethod("GET");
+            connection.setDoOutput(false);
+            /*
             String jsonObject = "{\"advertiser\":\"" + ad.getAdvertiser()
                     + "\",\"type\":\"" + ad.getType()
-                    + "\",\"state\":\"" + ad.getState()
-                    + "\", \"price\":\"" + ad.getPrice()
-                    + "\", \"gender\":\"" + ad.getGender()
+                    + "\", \"price\":" + ad.getPrice()
+                    + ", \"gender\":\"" + ad.getGender()
                     + "\", \"local\":\"" + ad.getLocal()
                     + "\", \"typology\":\"" + ad.getTypology()
-                    + "\", \"date\":\"" + ad.getDate()
                     + "\", \"description\":\"" + ad.getDescription()
                     + "\"}";
 
             OutputStream os = connection.getOutputStream();
             os.write(jsonObject.getBytes(StandardCharsets.UTF_8));
 
+             */
             BufferedReader b = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
-            String response = b.readLine();
-            response = response.trim();
+            StringBuilder response = new StringBuilder();
+            String line = "";
+            while((line = b.readLine()) != null)
+                response.append(line);
+            b.close();
 
-           return Integer.parseInt(response.toString());
+           return Integer.parseInt(response.toString().trim());
         } catch(Exception e) {
             e.printStackTrace();
             return -1;
@@ -241,13 +243,11 @@ public class Client {
 
     private static int searchAds(int value) {
         try {
-            List<Ad> ads = new LinkedList<Ad>();
             if (value == 0) {
                 HttpURLConnection connection = (HttpURLConnection) new URL(SERVER_URL + "/ads?state=ativo").openConnection();
                 connection.setRequestProperty("Content-Type", "application/json");
                 connection.setRequestMethod("GET");
                 connection.setDoOutput(false);
-
 
                 BufferedReader b = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 StringBuilder response = new StringBuilder();
@@ -401,8 +401,6 @@ public class Client {
             } while(fields.equals(""));
             msg.setContent(fields);
 
-            msg.setDate(new Date(System.currentTimeMillis()));
-
             if(postMessage(msg))
                 System.out.println("Ok mensagem enviada para o anúncio " + aid);
             else
@@ -412,26 +410,31 @@ public class Client {
 
     private static boolean postMessage(Message msg) {
         try {
-            HttpURLConnection connection = (HttpURLConnection) new URL(SERVER_URL + "/msg").openConnection();
+            HttpURLConnection connection = (HttpURLConnection) new URL(SERVER_URL + "/msg?sender=" + msg.getSender() +
+                    "&content=" + msg.getContent() + "&aid=" + msg.getAid()).openConnection();
             connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
             connection.setRequestProperty("Accept", "application/json");
-            connection.setRequestMethod("POST");
-            connection.setDoOutput(true);
+            //connection.setRequestMethod("POST");
+            connection.setRequestMethod("GET");
+            connection.setDoOutput(false);
 
+            /*
             String jsonObject = "{\"sender\":\"" + msg.getSender()
                     + "\",\"content\":\"" + msg.getContent()
-                    + "\",\"date\":\"" + msg.getDate()
                     + "\", \"aid\":\"" + msg.getAid()
                     + "\"}";
 
             OutputStream os = connection.getOutputStream();
             os.write(jsonObject.getBytes(StandardCharsets.UTF_8));
-
+             */
             BufferedReader b = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
-            String response = b.readLine();
-            response = response.trim();
+            StringBuilder response = new StringBuilder();
+            String line = "";
+            while((line = b.readLine()) != null)
+                response.append(line);
+            b.close();
 
-            return response.equals("true");
+            return response.toString().trim().equals("true");
         } catch(Exception e) {
             e.printStackTrace();
             return false;
