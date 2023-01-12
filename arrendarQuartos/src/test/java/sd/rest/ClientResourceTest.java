@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
-public class ServerResourceTest {
+public class ClientResourceTest {
 
     private HttpServer server;
     private WebTarget target;
